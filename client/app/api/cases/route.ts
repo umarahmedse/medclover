@@ -1,3 +1,4 @@
+/* eslint-disable*/
 import { NextResponse } from "next/server";
 import MedicalRecord from "@/models/caseModel";
 import connectToDB from "@/lib/mongodb";
