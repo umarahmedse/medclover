@@ -1,46 +1,40 @@
 import { NextResponse } from "next/server";
 import Doctor from "@/models/doctorModel";
-
+import dbConnection from "@/lib/mongodb";
 // Define the Doctor interface with _id as string
 interface Doctor {
-  _id: string;  // Ensure _id is a string
+  _id: string;
   name: string;
   specialization: string;
   isActive: boolean;
 }
 
 export async function GET(req: Request) {
+  await dbConnection();
   try {
-    // Fetch all active doctors using lean() to get plain objects
-    const doctors = await Doctor.find({ isActive: true }).lean(); // lean() returns plain JavaScript objects
+    // Use aggregate to group doctors by specialization directly in the database
+    const groupedDoctors = await Doctor.aggregate([
+      { $match: { isActive: true } },  // Filter active doctors
+      { $group: {  // Group doctors by specialization
+        _id: "$specialization",
+        doctors: {
+          $push: {
+            id: { $toString: "$_id" },  // Convert _id to string
+            name: "$name",
+          },
+        },
+      }},
+      { $project: { _id: 0, specialization: "$_id", doctors: 1 } },  // Restructure the output
+      { $sort: { "specialization": 1 } },  // Optional: sort by specialization
+    ]);
 
-    // Explicitly typecast the result to Doctor[]
-    const typedDoctors: Doctor[] = doctors.map((doc:any) => ({
-      _id: doc._id.toString(),  // Ensure _id is converted to a string
-      name: doc.name,
-      specialization: doc.specialization,
-      isActive: doc.isActive,
-    }));
+    // Convert to the expected format (if necessary)
+    const result = groupedDoctors.reduce((acc: Record<string, { id: string; name: string }[]>, group) => {
+      acc[group.specialization] = group.doctors;
+      return acc;
+    }, {});
 
-    // Group doctors by specialization
-    const groupedDoctors: Record<string, { id: string; name: string }[]> = {};
-
-    typedDoctors.forEach((doctor) => {
-      const specialization = doctor.specialization;
-
-      // If group doesn't exist for this specialization, create it
-      if (!groupedDoctors[specialization]) {
-        groupedDoctors[specialization] = [];
-      }
-
-      // Add doctor to the group
-      groupedDoctors[specialization].push({
-        id: doctor._id,  // Ensure _id is in string format
-        name: doctor.name,
-      });
-    });
-
-    return NextResponse.json(groupedDoctors);
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error fetching doctors:", error);
     return NextResponse.json({ message: "Failed to fetch doctors" }, { status: 500 });
