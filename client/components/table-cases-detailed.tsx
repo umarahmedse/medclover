@@ -14,7 +14,6 @@ import {
 import { TableSkeleton } from "./table-skeleton";
 import Link from "next/link";
 import { useSession } from "@clerk/nextjs";
-
 interface Case {
   _id: string;
   patientName: string;
@@ -23,15 +22,15 @@ interface Case {
   isClosed: boolean;
 }
 
-export function TableCases() {
+export function TableCasesDetailed() {
   const { session } = useSession();
-  const userId = session?.user.publicMetadata.user_id; // Fetch user ID from session metadata
+  const userId = session?.user.publicMetadata.user_id;
 
   const [cases, setCases] = useState<Case[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!userId) return; // Ensure userId exists before making the request
+    if (!userId) return; // Avoid making requests if userId is not available
 
     const fetchCases = async () => {
       try {
@@ -76,14 +75,13 @@ export function TableCases() {
                 .join(", ")}
             </TableCell>
             <TableCell>{caseItem.assignedDoctor}</TableCell>
-            <TableCell>
-              <p
-                className={`text-center w-fit ml-auto px-2 py-1 rounded-full ${
-                  caseItem.isClosed ? "bg-green-500 text-white" : "bg-red-500 text-white"
-                }`}
+            <TableCell className="flex items-center justify-center">
+              <Link
+                href={`/view-case/${caseItem._id}`}
+                className={`text-center w-fit ml-auto px-2 py-1 rounded-lg dark:bg-blue-500 dark:text-white bg-green-500 text-black`}
               >
-                {caseItem.isClosed ? "Closed" : "Open"}
-              </p>
+                View Case
+              </Link>
             </TableCell>
           </TableRow>
         ))}
@@ -93,7 +91,10 @@ export function TableCases() {
     <div className="!w-full flex flex-col gap-2 items-center justify-center">
       <h1>No Previous Cases 🙅‍♂️</h1>
       <h3>Want To Add One? ➕</h3>
-      <Link href="/addcase" className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black">
+      <Link
+        href="/addcase"
+        className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black"
+      >
         Add Case
       </Link>
     </div>

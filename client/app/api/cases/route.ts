@@ -34,26 +34,31 @@ export async function POST(req: Request) {
 
 
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    // Ensure MongoDB is connected
     await connectToDB();
+    
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
 
-    // Fetch cases and populate the assignedDoctor field
-    const cases = await Case.find()
-      .populate("assignedDoctor", "name")  // Populate the doctor’s name field
-      .lean();  // .lean() returns plain JavaScript objects
+    if (!userId) {
+      return NextResponse.json({ message: "User ID is required" }, { status: 400 });
+    }
 
-    // Map the cases to the structure we need for the frontend
+    // Fetch cases where assignedDoctor matches userId
+    const cases = await Case.find({ patientId: userId })
+      .populate("assignedDoctor", "name")
+      .lean();
+
     const formattedCases = cases.map((caseItem: any) => ({
-      _id: caseItem._id.toString(),  // Ensure _id is a string
+      _id: caseItem._id.toString(),
       patientName: caseItem.patientName,
-      assignedDoctor: caseItem.assignedDoctor?.name,  // Access the populated doctor's name
+      assignedDoctor: caseItem.assignedDoctor?.name,
       organAffected: caseItem.organAffected,
       isClosed: caseItem.isClosed,
     }));
 
-    return NextResponse.json(formattedCases); // Return the cases as JSON
+    return NextResponse.json(formattedCases);
   } catch (error) {
     console.error("Error fetching cases:", error);
     return NextResponse.json({ message: "Failed to fetch cases" }, { status: 500 });

@@ -41,7 +41,7 @@ const data = {
         },
         {
           title: "Case History",
-          url: "#",
+          url: "/cases-list",
         },
         {
           title: "View Doctors",
