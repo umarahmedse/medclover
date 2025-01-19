@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/toggle-button";
+import { Toaster } from "@/components/ui/toaster";
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
@@ -69,6 +70,8 @@ export default function RootLayout({
                     
                   </header>
                   {children}
+                  <Toaster />
+
                 </SidebarInset>
               </SidebarProvider>
             </SignedIn>

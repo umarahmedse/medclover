@@ -34,20 +34,20 @@ const DoctorSchema = new Schema(
         "General Medicine",
       ],
       required: true,
-      default:"N/A"
+      default: "N/A",
     },
     experienceYears: {
       type: Number,
       required: true,
       min: 0,
-      default:0
+      default: 0,
     },
     isActive: {
       type: Boolean,
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true } 
 );
 
 const Doctor = models.Doctor || model("Doctor", DoctorSchema);

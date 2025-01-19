@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     await connectToDB(); // Ensure database connection
 
     // Read the body only once
-    const { patientId, patientage, patientName, assignedDoctor, organAffected, patientDescription } = await req.json();
+    const { patientId, patientAge, patientName, assignedDoctor, organAffected, patientDescription } = await req.json();
 
     if (!patientId || !assignedDoctor || !organAffected || !patientDescription) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       assignedDoctor,
       organAffected,
       patientDescription,
-      patientage,
+      patientAge,
       patientName
     });
 

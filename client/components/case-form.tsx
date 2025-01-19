@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button";
 import { FiMic, FiMicOff } from "react-icons/fi";
 import { Skeleton } from "./ui/skeleton";
 import { useSession } from "@clerk/nextjs";
-import axios from "axios"
-// Type definitions for Web Speech API
+import axios from "axios";
+import DoctorSelect from "./DoctorSelect";
+import { useToast } from "@/hooks/use-toast"
+
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList;
   resultIndex: number;
@@ -45,20 +47,23 @@ declare global {
 
 export default function CaseForm() {
   const { session } = useSession();
+  const patientId = session?.user?.publicMetadata?.user_id;
   const [patientName, setPatientName] = useState("");
   const [age, setAge] = useState("");
   const [selectedOrgans, setSelectedOrgans] = useState<string[]>([]);
   const [description, setDescription] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState(""); // New state for selected doctor
+  const [doctors, setDoctors] = useState<Record<string, { id: string; name: string }[]>>({}); // State for doctors list
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(
-    null
-  );
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
   const [interimTranscript, setInterimTranscript] = useState("");
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const isManualEditingRef = useRef(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  const { toast } = useToast(); // Hook for toast notifications
 
   useEffect(() => {
     if ("webkitSpeechRecognition" in window) {
@@ -112,6 +117,18 @@ export default function CaseForm() {
       recognitionRef.current = recognitionInstance;
     }
 
+    // Fetch doctors list
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get("/api/doctors");
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.onend = null;
@@ -121,7 +138,6 @@ export default function CaseForm() {
     };
   }, []);
 
-  // Rest of the component remains the same...
   const stopRecognition = () => {
     if (recognitionRef.current) {
       try {
@@ -172,59 +188,70 @@ export default function CaseForm() {
     setSelectedOrgans(organs);
   };
 
+  const handleDoctorSelect = (value: string) => {
+    setSelectedDoctor(value); // Set the selected doctor
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     // Ensure that all required fields are provided
-    if (!patientName || !age || selectedOrgans.length === 0 || !description) {
-      alert("Please fill all fields and select at least one organ.");
+    if (!patientName || !age || selectedOrgans.length === 0 || !description || !selectedDoctor) {
+      toast({
+        title: "Error",
+        description: "Please fill all fields, select at least one organ, and choose a doctor.",
+        variant: "destructive",
+      });
       return;
     }
-  
+
     setIsSubmitting(true);
-  
+
     // Construct the request body
     const reqBody = {
-      patientId: session?.publicUserData?.userId,  // Ensure patientId is properly fetched
-      patientName,
+      patientId, patientName,
       patientAge: age,
       organAffected: selectedOrgans,
       patientDescription: description,
+      assignedDoctor: selectedDoctor,
     };
-  
-    console.log(reqBody); // For debugging purposes
-  
+
     try {
       // Make the API request using axios
       const response = await axios.post("/api/cases", reqBody, {
         headers: { "Content-Type": "application/json" },
       });
-  
+
       // Handle successful response
-      console.log("Submission success:", response.data);
-  
-      // Show success message
-      alert(`Case Submitted: ${response.data.message}`);
-  
+      toast({
+        title: "Success",
+        description: `Case Submitted Successfully`,
+      });
     } catch (error) {
       // Handle error if the request fails
       console.error("Submission error:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
-        alert(`Error: ${errorData.error || "Something went wrong!"}`);
+        toast({
+          title: "Error",
+          description: errorData.error || "Something went wrong!",
+          variant: "destructive",
+        });
       } else {
-        alert("Failed to submit case.");
+        toast({
+          title: "Error",
+          description: "Failed to submit case.",
+          variant: "destructive",
+        });
       }
     } finally {
       // Stop the submitting state regardless of the outcome
       setIsSubmitting(false);
     }
   };
-  
-console.log(session)
+
   return (
     <div>
-     
       <h1 className="text-2xl font-bold">Add Case</h1>
 
       <div className="grid w-full items-center gap-4 p-4">
@@ -258,6 +285,13 @@ console.log(session)
             onOrganChange={handleOrganChange}
           />
 
+          <DoctorSelect
+            doctors={doctors}
+            loading={Object.keys(doctors).length === 0}
+            selectedDoctor={selectedDoctor}
+            onSelect={handleDoctorSelect}
+          />
+
           <div className="relative">
             <Label htmlFor="description">Self Description</Label>
             <textarea
@@ -288,6 +322,7 @@ console.log(session)
               )}
             </button>
           </div>
+
           {isSubmitting ? (
             <Skeleton className="h-[30px] w-full rounded-lg" />
           ) : (
