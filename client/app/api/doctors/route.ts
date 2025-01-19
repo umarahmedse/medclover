@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { NextResponse } from "next/server";
 import Doctor from "@/models/doctorModel";
 
