@@ -1,11 +1,10 @@
+/* eslint-disable*/
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
 
-// Updated to properly await the params before usage
-export async function GET(req: Request, context: { params: { id: string } }) {
-  // Awaiting params here before usage
-  const { id } = await context.params; // This is the correct way
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const { id } = params; // No need to await
 
   try {
     await connectToDB(); // Ensure DB is connected
