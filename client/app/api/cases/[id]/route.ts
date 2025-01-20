@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
 
-// Correct function signature for the App Router in Next.js 13
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // Await params to extract the id
 
   try {
     await connectToDB(); // Ensure DB is connected
