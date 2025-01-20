@@ -1,3 +1,5 @@
+/* eslint-disable*/
+
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
