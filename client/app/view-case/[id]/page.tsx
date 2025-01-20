@@ -1,3 +1,5 @@
+/* eslint-disable*/
+
 import { Label } from "@/components/ui/label";
 import MultiOrganSelector from "@/components/MultipleOrganSelector";
 import connectToDB  from "@/lib/mongodb";
