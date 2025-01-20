@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import MultiOrganSelector from "@/components/MultipleOrganSelector";
-import DoctorSelect from "@/components/DoctorSelect";
 import axios from "axios";
 
 export default function CaseView() {
