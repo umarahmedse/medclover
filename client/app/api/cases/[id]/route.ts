@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
 
-// This function signature is what Next.js expects
+// Correct function signature for the App Router in Next.js 13
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
