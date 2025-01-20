@@ -1,10 +1,9 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
-import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// This function signature is what Next.js expects
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   try {
