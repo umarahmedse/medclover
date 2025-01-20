@@ -1,12 +1,11 @@
 /* eslint-disable*/
-
 import { Label } from "@/components/ui/label";
 import MultiOrganSelector from "@/components/MultipleOrganSelector";
-import connectToDB  from "@/lib/mongodb";
+import  connectToDB  from "@/lib/mongodb";
 import Case from "@/models/caseModel";
 
-async function CaseView({ params }: { params: { id: string } }) {
-  const { id } = params;
+async function CaseView({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // Await the promise to get params
 
   try {
     await connectToDB();
