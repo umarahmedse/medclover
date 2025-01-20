@@ -1,10 +1,11 @@
-/* eslint-disable*/
+/* eslint-disable */
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
+import { NextRequest } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params; // No need to await
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
 
   try {
     await connectToDB(); // Ensure DB is connected
