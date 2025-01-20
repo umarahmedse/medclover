@@ -3,10 +3,10 @@ import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params; // Await params to extract the id
+  const { id } = await params;
 
   try {
-    await connectToDB(); // Ensure DB is connected
+    await connectToDB();
 
     if (!id) {
       return NextResponse.json({ message: "Case ID is required" }, { status: 400 });
@@ -20,13 +20,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ message: "Case not found" }, { status: 404 });
     }
 
+    // Ensure caseData is not an array, and handle the case if it's null
+    const { _id, patientName, patientAge, assignedDoctor, organAffected, patientDescription } = caseData as any;
+
     return NextResponse.json({
-      _id: caseData._id.toString(),
-      patientName: caseData.patientName,
-      patientAge: caseData.patientAge,
-      assignedDoctor: caseData.assignedDoctor?.name || "Unknown",
-      organAffected: caseData.organAffected,
-      patientDescription: caseData.patientDescription,
+      _id: _id.toString(),
+      patientName,
+      patientAge,
+      assignedDoctor: assignedDoctor?.name || "Unknown",
+      organAffected,
+      patientDescription,
     });
   } catch (error) {
     console.error("Error fetching case:", error);
