@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Doctor from "@/models/doctorModel"; // ✅ Import Doctor before using it
 
 const { Schema, model, models } = mongoose;
 
@@ -19,17 +20,17 @@ const CaseModelSchema = new Schema(
     },
     assignedDoctor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Doctor",
+      ref: "Doctor", // ✅ This needs to be registered before use
       required: true,
     },
     organAffected: {
-      type: [String],  // This allows for an array of strings
+      type: [String],  
       required: true,
     },
     patientDescription: {
       type: String,
       required: true,
-      default:""
+      default: "",
     },
     doctorRemarks: {
       type: String,
@@ -43,7 +44,6 @@ const CaseModelSchema = new Schema(
   { timestamps: true }
 );
 
-const CaseModel =
-  models.Cases || model("Cases", CaseModelSchema);
+const CaseModel = models.Cases || model("Cases", CaseModelSchema);
 
 export default CaseModel;
