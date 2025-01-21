@@ -69,7 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} groupTitle="User Dashboard" />
       </SidebarContent>
       <SidebarFooter>
-        <UserButton showName={true} appearance={userButtonAppearance} />
+        <UserButton />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

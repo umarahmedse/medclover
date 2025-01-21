@@ -67,12 +67,12 @@ export default function CaseView() {
           <div className="flex flex-col gap-3">
             <div className="md:max-w-[50%]">
               <Label>Patient Name</Label>
-              <p className="border p-2 rounded-md">{caseData.patientName}</p>
+              <p className="border p-2 rounded-md hover:cursor-not-allowed">{caseData.patientName}</p>
             </div>
 
             <div className="md:max-w-[50%]">
               <Label>Age</Label>
-              <p className="border p-2 rounded-md">{caseData.patientAge}</p>
+              <p className="border p-2 rounded-md hover:cursor-not-allowed">{caseData.patientAge}</p>
             </div>
 
             <div>
@@ -84,7 +84,7 @@ export default function CaseView() {
             </div>
             <div className="md:max-w-[50%]">
               <Label>Doctor :</Label>
-              <p className="border p-2 rounded-md">{caseData.assignedDoctor || "Un-assigned yet"}</p>
+              <p className="border p-2 rounded-md hover:cursor-not-allowed">{caseData.assignedDoctor || "Un-assigned yet"}</p>
             </div>
             
 
@@ -92,7 +92,7 @@ export default function CaseView() {
               <Label>Self Description</Label>
               <textarea
                 rows={8}
-                className="border p-2 rounded-md whitespace-pre-wrap w-full"
+                className="border p-2 rounded-md hover:cursor-not-allowed whitespace-pre-wrap w-full"
                 defaultValue={caseData.patientDescription}
                 readOnly
               ></textarea>
@@ -101,7 +101,7 @@ export default function CaseView() {
               <Label>Enhanced Description</Label>
               <textarea
                 rows={8}
-                className="border p-2 rounded-md whitespace-pre-wrap w-full"
+                className="border p-2 rounded-md hover:cursor-not-allowed whitespace-pre-wrap w-full"
                 defaultValue={caseData.enhancedDescription}
               ></textarea>
             </div>
