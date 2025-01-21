@@ -34,7 +34,7 @@ export default function MultiOrganSelector({
 
   return (
     <div className="w-full p-6 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Select Organs For Diagnosis</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Organs For Diagnosis</h2>
       <div className="flex flex-wrap justify-center gap-4">
         {organs.map(({ value, label, icon }) => (
           <div key={value} className="flex flex-col items-center space-y-2">

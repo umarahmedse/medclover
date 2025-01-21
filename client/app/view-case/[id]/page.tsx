@@ -76,7 +76,6 @@ export default function CaseView() {
             </div>
 
             <div>
-              <Label>Selected Organs</Label>
               <MultiOrganSelector
                 selectedOrgans={caseData.organAffected}
                 onOrganChange={() => {}}
