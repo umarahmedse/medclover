@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import MedicalRecord from "@/models/caseModel";
 import connectToDB from "@/lib/mongodb";
 import Case from "@/models/caseModel";  // Assuming you have a case model defined
-
+import Doctor from "@/models/doctorModel";
 export async function POST(req: Request) {
   try {
     await connectToDB(); // Ensure database connection
@@ -34,10 +34,11 @@ export async function POST(req: Request) {
 
 
 
+
 export async function GET(req: Request) {
   try {
-    await connectToDB();
-    
+    await connectToDB(); // Ensure the database connection is established
+
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 
@@ -45,9 +46,14 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "User ID is required" }, { status: 400 });
     }
 
+    // Ensure Doctor model is registered before querying
+    if (!Doctor) {
+      throw new Error("Doctor model is not registered.");
+    }
+
     // Fetch cases where assignedDoctor matches userId
     const cases = await Case.find({ patientId: userId })
-      .populate("assignedDoctor", "name")
+      .populate("assignedDoctor", "name") // 🔥 Mongoose looks for "Doctor" model here
       .lean();
 
     const formattedCases = cases.map((caseItem: any) => ({
