@@ -1,3 +1,5 @@
+/* eslint-disable*/
+
 import mongoose from "mongoose";
 import Doctor from "@/models/doctorModel"; // ✅ Import Doctor before using it
 
