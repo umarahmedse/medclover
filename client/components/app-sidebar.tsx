@@ -45,7 +45,7 @@ const data = {
         },
         {
           title: "View Doctors",
-          url: "#",
+          url: "/view-doctors",
         },
       ],
     },
