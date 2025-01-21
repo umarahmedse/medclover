@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const { Schema, model, models } = mongoose;
+const { Schema } = mongoose;
 
 const DoctorSchema = new Schema(
   {
@@ -47,9 +47,7 @@ const DoctorSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
-const Doctor = models.Doctor || model("Doctor", DoctorSchema);
-
-export default Doctor;
+export default DoctorSchema;

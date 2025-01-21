@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { NextResponse } from "next/server";
-import Doctor from "@/models/doctorModel";
+import {Doctor} from "@/models";
 import dbConnection from "@/lib/mongodb";
 // Define the Doctor interface with _id as string
 interface Doctor {

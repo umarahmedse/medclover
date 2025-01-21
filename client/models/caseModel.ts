@@ -1,9 +1,6 @@
-/* eslint-disable*/
-
 import mongoose from "mongoose";
-import Doctor from "@/models/doctorModel"; // ✅ Import Doctor before using it
 
-const { Schema, model, models } = mongoose;
+const { Schema } = mongoose;
 
 const CaseModelSchema = new Schema(
   {
@@ -22,11 +19,11 @@ const CaseModelSchema = new Schema(
     },
     assignedDoctor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Doctor", // ✅ This needs to be registered before use
+      ref: "Doctor", // This will be registered in the central place
       required: true,
     },
     organAffected: {
-      type: [String],  
+      type: [String],
       required: true,
     },
     patientDescription: {
@@ -46,6 +43,4 @@ const CaseModelSchema = new Schema(
   { timestamps: true }
 );
 
-const CaseModel = models.Cases || model("Cases", CaseModelSchema);
-
-export default CaseModel;
+export default CaseModelSchema;

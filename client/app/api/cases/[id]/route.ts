@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
-import Case from "@/models/caseModel";
+import {Case} from "@/models";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

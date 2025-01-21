@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import dbConnection from "../mongodb";
-import User from "@/models/userModel";
+import {User} from "@/models";
 
 export async function createUser(user: any) {
   try {

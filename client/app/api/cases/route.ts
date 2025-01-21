@@ -1,9 +1,7 @@
 /* eslint-disable*/
 import { NextResponse } from "next/server";
-import MedicalRecord from "@/models/caseModel";
 import connectToDB from "@/lib/mongodb";
-import Case from "@/models/caseModel";  // Assuming you have a case model defined
-import Doctor from "@/models/doctorModel";
+import {Case,Doctor} from "@/models";  // Assuming you have a case model defined
 export async function POST(req: Request) {
   try {
     await connectToDB(); // Ensure database connection
@@ -15,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const newRecord = await MedicalRecord.create({
+    const newRecord = await Case.create({
       patientId,
       assignedDoctor,
       organAffected,
