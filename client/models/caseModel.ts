@@ -31,6 +31,11 @@ const CaseModelSchema = new Schema(
       required: true,
       default: "",
     },
+    enhancedDescription: {
+      type: String,
+      required: true,
+      default: "",
+    },
     doctorRemarks: {
       type: String,
       default: "",

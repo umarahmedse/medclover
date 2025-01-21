@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import MultiOrganSelector from "@/components/MultipleOrganSelector";
 import axios from "axios";
 import { Progress } from "@/components/ui/progress";
+import { MedicalCaseStatus } from "@/components/medical-case-status";
 
 export default function CaseView() {
   const { id } = useParams(); // Get case ID from URL
@@ -21,7 +22,7 @@ export default function CaseView() {
     const fetchCase = async () => {
       try {
         setLoading(true);
-        setProgress(10); // Start at 10%
+        setProgress(0); // Start at 10%
 
         const response = await axios.get(`/api/cases/${id}`, {
           onDownloadProgress: (progressEvent) => {
@@ -35,6 +36,7 @@ export default function CaseView() {
         });
 
         setCaseData(response.data);
+        console.log(response.data)
       } catch (err) {
         console.error("Error fetching case:", err);
         setError("Failed to load case data.");
@@ -57,7 +59,8 @@ export default function CaseView() {
     );
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Case Details</h1>
+      <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Case Details</h1>
+      <MedicalCaseStatus isClosed={caseData.isClosed} caseId={caseData._id.slice(-5).toUpperCase()} />      </div>
       {/* ✅ Show case details only after loading is complete */}
       {!loading && caseData && (
         <div className="grid w-full items-center gap-4 p-4">
@@ -91,6 +94,14 @@ export default function CaseView() {
                 rows={8}
                 className="border p-2 rounded-md whitespace-pre-wrap w-full"
                 defaultValue={caseData.patientDescription}
+              ></textarea>
+            </div>
+            <div>
+              <Label>Enhanced Description</Label>
+              <textarea
+                rows={8}
+                className="border p-2 rounded-md whitespace-pre-wrap w-full"
+                defaultValue={caseData.enhancedDescription}
               ></textarea>
             </div>
           </div>

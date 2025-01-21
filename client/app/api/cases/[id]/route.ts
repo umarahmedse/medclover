@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     // Ensure caseData is not an array, and handle the case if it's null
-    const { _id, patientName, patientAge, assignedDoctor, organAffected, patientDescription } = caseData as any;
+    const { _id, patientName, patientAge, assignedDoctor, organAffected, patientDescription,enhancedDescription ,isClosed} = caseData as any;
 
     return NextResponse.json({
       _id: _id.toString(),
@@ -32,6 +32,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       assignedDoctor: assignedDoctor?.name || "Unknown",
       organAffected,
       patientDescription,
+      enhancedDescription,
+      isClosed
     });
   } catch (error) {
     console.error("Error fetching case:", error);
