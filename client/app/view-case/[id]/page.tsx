@@ -94,6 +94,7 @@ export default function CaseView() {
                 rows={8}
                 className="border p-2 rounded-md whitespace-pre-wrap w-full"
                 defaultValue={caseData.patientDescription}
+                readOnly
               ></textarea>
             </div>
             <div>
