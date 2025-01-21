@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
     // Call the enhancement function to improve the patient description
     const enhancedDescription = await enhanceDescription(
-      `${patientDescription} selected organs of the patient are ${organAffected} , avoid any fancy type of heading etc response, only paragraph 2-3 maximum, plaint text and emojis only, and dont respond okay i undertand etc, it is a professional description, directly just answer to the point also if possible, at the last line, predict recommendation of the expected disease`
+      `${patientDescription} selected organs of the patient are ${organAffected} , avoid any fancy type of heading etc response, only paragraph 2-3 maximum, plaint text and emojis only, and dont respond okay i undertand etc, it is a professional description, directly just answer to the point also if possible, at the last line, predict recommendation of the expected disease  MAKE SURE IT SERVES AS A HELPING ENHANCED VERSION, FOR THE DOCTOR TO UNDERSTAND`
     );
 
     // Create the new case record with the enhanced description
