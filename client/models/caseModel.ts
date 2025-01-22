@@ -46,9 +46,11 @@ const CaseModelSchema = new Schema(
     },
     diagnosis: {
       type: String,
+      default:""
     },
     perscription: {
-      type: String,
+      type: String,      default:""
+
     },
   },
   { timestamps: true }
