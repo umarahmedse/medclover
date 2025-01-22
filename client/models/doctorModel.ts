@@ -4,10 +4,8 @@ const { Schema } = mongoose;
 
 const DoctorSchema = new Schema(
   {
-    name: {
+    clerkId: {
       type: String,
-      required: true,
-      trim: true,
     },
     email: {
       type: String,
@@ -15,9 +13,12 @@ const DoctorSchema = new Schema(
       unique: true,
       lowercase: true,
     },
+    name: {
+      type: String,
+      trim: true,
+    },
     phone: {
       type: String,
-      required: true,
     },
     specialization: {
       type: String,
@@ -33,19 +34,22 @@ const DoctorSchema = new Schema(
         "Endocrinology",
         "General Medicine",
       ],
-      required: true,
-      default: "N/A",
     },
     experienceYears: {
       type: Number,
-      required: true,
       min: 0,
-      default: 0,
     },
     isActive: {
       type: Boolean,
       default: true,
     },
+    isProfileCompleted:{
+      type:Boolean,
+      default:false
+    }
+    
+    
+
   },
   { timestamps: true }
 );
