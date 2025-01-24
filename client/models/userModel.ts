@@ -5,6 +5,7 @@ interface IUser extends Document {
   name: string;
   email: string;
   clerkId: string;
+  image_url:string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -27,6 +28,10 @@ const userSchema = new Schema<IUser>({
     unique: true,
     lowercase: true,
     trim: true,
+  },
+  image_url: {
+    type: String,
+   
   },
 });
 

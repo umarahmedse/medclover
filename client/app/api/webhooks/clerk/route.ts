@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 
-import { createUser } from "@/lib/actions/user.actions";
+import { createUser, updateUser } from "@/lib/actions/user.actions";
 
 export async function POST(req: Request) {
   const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -59,16 +59,18 @@ export async function POST(req: Request) {
 
   if (eventType === "user.created") {
     // Handle user created event
-    const { id, first_name, last_name, username, email_addresses } = evt.data;
+    const { id, first_name, last_name, username, email_addresses, image_url } = evt.data;
     const userData = {
       clerkId: id,
       name: `${first_name} ${last_name}`,
       username: username,
       email: email_addresses[0].email_address,
+      imageUrl: image_url,
     };
     const newUser = await createUser(userData);
     if (newUser) {
       const client = await clerkClient();
+
       await client.users.updateUserMetadata(id, {
         publicMetadata: {
           user_id: newUser._id,
@@ -76,12 +78,23 @@ export async function POST(req: Request) {
       });
       return NextResponse.json({ message: "New User created", user: newUser });
     }
-
-    console.log(
-      `Received webhook with ID ${id} and event type of ${eventType}`
-    );
-    console.log("Webhook payload:", body);
-
-    return new Response("Webhook received", { status: 200 });
   }
+
+  if (eventType === "user.updated") {
+    // Handle user updated event
+    const { id, first_name, last_name, username, email_addresses, image_url } = evt.data;
+    const updatedUserData = {
+      name: `${first_name} ${last_name}`,
+      username: username,
+      email: email_addresses[0].email_address,
+      imageUrl: image_url,
+    };
+    const updatedUser = await updateUser(id, updatedUserData);
+    return NextResponse.json({ message: "User updated", user: updatedUser });
+  }
+
+  console.log(`Received webhook with ID ${id} and event type of ${eventType}`);
+  console.log("Webhook payload:", body);
+
+  return new Response("Webhook received", { status: 200 });
 }
