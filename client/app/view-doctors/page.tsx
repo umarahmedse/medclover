@@ -22,6 +22,7 @@ export interface Doctor {
     isActive: boolean;
     createdAt: string; // Timestamps from Mongoose
     updatedAt: string;
+    image_url:string;
   }
   
   export default async function DoctorsPage() {
