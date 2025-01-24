@@ -2,10 +2,10 @@
 
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/mongodb";
-import {Case} from "@/models";
+import { Case } from "@/models";
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
 
   try {
     await connectToDB();
@@ -22,8 +22,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ message: "Case not found" }, { status: 404 });
     }
 
-    // Ensure caseData is not an array, and handle the case if it's null
-    const { _id, patientName, patientAge, assignedDoctor, organAffected, patientDescription,enhancedDescription ,isClosed} = caseData as any;
+    const {
+      _id,
+      patientName,
+      patientAge,
+      assignedDoctor,
+      organAffected,
+      patientDescription,
+      enhancedDescription,
+      isClosed,
+      doctorRemarks,
+      diagnosis,
+      perscription,
+    } = caseData as any;
 
     return NextResponse.json({
       _id: _id.toString(),
@@ -33,7 +44,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       organAffected,
       patientDescription,
       enhancedDescription,
-      isClosed
+      isClosed,
+      doctorRemarks: doctorRemarks || "",
+      diagnosis: diagnosis || "",
+      perscription: perscription || "",
     });
   } catch (error) {
     console.error("Error fetching case:", error);
