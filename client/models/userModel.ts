@@ -31,7 +31,6 @@ const userSchema = new Schema<IUser>({
   },
   image_url: {
     type: String,
-   
   },
 });
 

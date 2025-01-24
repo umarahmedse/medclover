@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       name: `${first_name} ${last_name}`,
       username: username,
       email: email_addresses[0].email_address,
-      imageUrl: image_url,
+      image_url: image_url,
     };
     const newUser = await createUser(userData);
     if (newUser) {
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
       name: `${first_name} ${last_name}`,
       username: username,
       email: email_addresses[0].email_address,
-      imageUrl: image_url,
+      image_url: image_url,
     };
     const updatedUser = await updateUser(id, updatedUserData);
     return NextResponse.json({ message: "User updated", user: updatedUser });
