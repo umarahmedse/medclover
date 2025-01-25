@@ -1,4 +1,4 @@
-import { BarChartLabeled } from "@/components/bar-chart";
+import { BarChartStacked } from "@/components/bar-chart";
 import { RadialChartStacked } from "@/components/radial-chart-stacked";
 import { TableCases } from "@/components/table-cases";
 
@@ -13,7 +13,7 @@ export default function Page() {
           chartFirstColor="#51cf66"
           chartSecondColor="#c0eb75"
         />
-        <BarChartLabeled chartFirstColor="#c0eb75" chartSecondColor="#51cf66" />
+        <BarChartStacked />
         <RadialChartStacked
           chartFooter="Cases"
           title="Cases Closed"

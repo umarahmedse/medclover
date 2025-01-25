@@ -1,7 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -17,76 +26,126 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 0 },
-  { month: "March", desktop: 0 },
-  { month: "April", desktop: 0 },
-  { month: "May", desktop: 0 },
-  { month: "June", desktop: 0 },
-];
+import { BarChartSkeleton } from "./bar-chart-skeleton";
 
-export function BarChartLabeled({
-  chartFirstColor,
-  chartSecondColor,
-}: {
-  chartFirstColor: string;
-  chartSecondColor: string;
-}) {
-  const chartConfig = {
-    desktop: {
-      label: "Desktop",
-      color: chartFirstColor,
-    },
-    mobile: {
-      label: "Mobile",
-      color: chartSecondColor,
-    },
-  } satisfies ChartConfig;
+// Define chart configuration
+const chartConfig = {
+  deaths: {
+    label: "Deaths",
+    color: "rgb(81, 207, 102)",
+  },
+  label: {
+    color: "hsl(var(--background))",
+  },
+} satisfies ChartConfig;
+
+export function BarChartStacked() {
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/charts"); // Replace with your actual API route
+        const diseases = response.data;
+
+        // Transform data for Recharts
+        const formattedData = diseases.map((disease: any) => ({
+          name: disease.disease,
+          deaths: disease.deaths, // Keep numeric for scaling
+          deathsDisplay: (disease.deaths / 1000).toFixed(1) + "k", // Format for display
+          recoveryRate: disease.recovery_rate,
+        }));
+
+        setChartData(formattedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after data fetch
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <Card className="flex-grow">
-      <CardHeader className="mb-[10px]">
-        <CardTitle>Bar Chart - Label</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+    <Card className="md:h-[350px]">
+      <CardHeader>
+        <CardTitle>Deadly Diseases Chart</CardTitle>
+        <CardDescription>Top Occurring Diseases In Area</CardDescription>
       </CardHeader>
-      <CardContent className="-mt-6">
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              top: 20,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
-              <LabelList
-                position="top"
-                offset={12}
-                className="fill-foreground"
-                fontSize={12}
+      <CardContent>
+        {loading ? (
+          // Show your custom skeleton component here
+          <BarChartSkeleton/> // Custom skeleton loader, replace with your own
+        ) : (
+          <ChartContainer config={chartConfig}>
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              layout="vertical"
+              margin={{
+                right: 0,
+              }}
+            >
+              <CartesianGrid horizontal={false} />
+              <YAxis
+                dataKey="name"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                hide
               />
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+              <XAxis dataKey="deaths" type="number" />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    indicator="line"
+                    formatter={(value: number | string | (number | string)[]) => {
+                      if (Array.isArray(value)) {
+                        return value
+                          .map((v) =>
+                            typeof v === "number"
+                              ? `${(v / 1000).toFixed(1)}k`
+                              : v
+                          )
+                          .join(", ");
+                      }
+                      return typeof value === "number"
+                        ? `${(value / 1000).toFixed(1)}k`
+                        : value;
+                    }}
+                  />
+                }
+              />
+              <Bar dataKey="deaths" fill="var(--color-deaths)" radius={4}>
+                <LabelList
+                  dataKey="name"
+                  position="insideLeft"
+                  offset={8}
+                  className="fill-[--color-label] "
+                  fontSize={12}
+                />
+                <LabelList
+                  dataKey="deathsDisplay"
+                  position="right"
+                  offset={8}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm -mt-4">
+      <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Disease Trends <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Data fetched from AI-enhanced sources
         </div>
       </CardFooter>
     </Card>
