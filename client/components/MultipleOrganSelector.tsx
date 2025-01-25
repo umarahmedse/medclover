@@ -13,6 +13,7 @@ const organs = [
   { value: "liver", label: "Liver", icon: <GiLiver size={40} color="#B22222"/> },
   { value: "eye", label: "Eye", icon: "👁️" },
   { value: "ear", label: "Ear", icon: "👂" },
+  { value: "other organ - (not speciied specifically)", label: "Other", icon: "🤔" },
 ];
 
 interface MultiOrganSelectorProps {
